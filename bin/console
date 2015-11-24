@@ -11,4 +11,6 @@ require "sql_capsule"
 # Pry.start
 
 require "irb"
+@db      = PG.connect(dbname: 'sql_capsule_test')
+@wrapper = SQLCapsule.wrap(@db)
 IRB.start

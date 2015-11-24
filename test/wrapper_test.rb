@@ -16,7 +16,7 @@ module SQLCapsule
     def test_can_run_a_query
       wrapper  = Wrapper.new(@db)
       result   = wrapper.run 'SELECT * FROM widgets WHERE name = $1;', [ 'hexowrench' ]
-      wrenches = { 'name' => 'hexowrench', 'price' => 2999, 'id' => 1 }
+      wrenches = [{ 'name' => 'hexowrench', 'price' => 2999, 'id' => 1 }]
       assert_equal wrenches, result
     end
 
@@ -24,19 +24,6 @@ module SQLCapsule
       wrapper = Wrapper.new(@db)
       query   = 'SELECT * FROM widgets LEFT JOIN orders on widgets.id=orders.widget_id;'
       assert_raises(Wrapper::DuplicateColumnNamesError){ wrapper.run query }
-    end
-
-    def test_run_accepts_a_block
-      wrapper = Wrapper.new(@db)
-      query   = 'SELECT * FROM widgets;'
-      acc = [ ]
-
-      wrapper.run query do |result|
-        acc << result
-      end
-
-      accumulated_result = [ {"name"=>"hexowrench", "price"=>2999, "id"=>1}, {"name"=>"clodhopper", "price"=>350, "id"=>2} ]
-      assert_equal accumulated_result, acc
     end
 
   end

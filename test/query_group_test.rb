@@ -4,26 +4,12 @@ require 'sql_capsule/query_group'
 module SQLCapsule
   class QueryGroupTest < Minitest::Test
 
-    class TestWrapper
-      def initialize(response)
-        @response = response
-      end
-
-      def run query, arguments, &block
-        if block_given?
-          block.call(@response)
-        else
-          @response
-        end
-      end
-    end
-
     def setup
-      @user_data = { name: 'John', age: 20 }
-      @name      = :find_user
-      @wrapper   = TestWrapper.new(@user_data)
+      @db = PG.connect(dbname: 'sql_capsule_test')
+      @name      = :find_widget
+      @wrapper   = Wrapper.new(@db)
       @queries   = QueryGroup.new(@wrapper)
-      @query_string = 'SELECT * FROM users_table WHERE id = $1;'
+      @query_string = 'SELECT * FROM widgets WHERE id = $1;'
     end
 
     def test_it_registers_queries
@@ -32,11 +18,17 @@ module SQLCapsule
       assert_equal [ @name ], @queries.registered_queries
     end
 
+    def test_it_registers_a_query_with_a_block
+      @queries.register(@name, @query_string, :id) { |result| result.map { |widget| widget["name"]}}
+      result = @queries.run @name, id: 1
+      assert_equal ["hexowrench"], result
+    end
+
     def test_it_can_run_a_query
       @queries.register @name, @query_string, :id
-      result = @queries.run @name, id: 3
+      result = @queries.run @name, id: 1
 
-      assert_equal @user_data, result
+      assert_equal [{"name"=>"hexowrench", "price"=>"2999", "id"=>"1"}], result
     end
 
     def test_raises_an_error_when_missing_an_argument
@@ -52,14 +44,14 @@ module SQLCapsule
     def test_does_not_raise_error_when_given_extra_arguments
       @queries.register @name, @query_string
 
-      assert @queries.run @name, id: 3
+      assert @queries.run @name, id: 1
     end
 
-    def test_run_accepts_a_block
-      @queries.register @name, @query_string, :id
+    def test_a_query_can_be_called_with_a_block
+      @queries.register @name, @query_string
 
-      @queries.run @name, id: 3 do |result|
-        assert_equal @user_data, result
+      @queries.run(@name, id: 1) do |result|
+        assert_equal "hexowrench", result["name"]
       end
     end
 

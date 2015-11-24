@@ -9,21 +9,16 @@ module SQLCapsule
       @db = db
     end
 
-    def run(query, arguments = [ ], &block)
-      db.exec_params(query, arguments) do |result|
+    def run(query, arguments = [ ])
+      db.exec(query, arguments) do |result|
         raise DuplicateColumnNamesError.new(result.fields, query) if duplicate_result_columns?(result.fields)
 
         if block_given?
           result.each do |row|
-            block.call(row)
-          end
-        else
-          if result.to_a.size == 1
-            result.to_a.first
-          else
-            result.to_a
+            yield row
           end
         end
+        result.to_a
       end
     end
 
