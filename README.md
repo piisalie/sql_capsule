@@ -6,6 +6,7 @@ Note: this is still under heavy construction
 - [x] Refactor QueryHolder#run it's pretty terrible, maybe there's another object in there somewhere
 - [x] Enforce `$1` count in SQL query should match the named arguments count when registering a query
 - [x] Clean up the README
+- [ ] Fix the tests/test database setup
 - [ ] Check/update dependencies/versions
 - [ ] Describe intended usage better
 
