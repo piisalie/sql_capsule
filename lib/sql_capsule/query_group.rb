@@ -19,6 +19,7 @@ module SQLCapsule
     def run name, args = { }
       query = queries.fetch(name) { fail MissingQueryError.new "Query #{name} not registered" }
       check_args query.last, args.keys
+
       block = queries[name][1]
       if block
         if block_given?
