@@ -38,14 +38,14 @@ Or install it yourself as:
 ## Usage
 
 Initialize a wrapper using a PG connection object:
-```
+```ruby
 user_database = SQLCapsule.wrap(pg_connection)
 ```
 
 Once you have a wrapper you can register bits of SQL. The method
 signature is: `query_name, raw_sql, *arguments`
 
-```
+```ruby
 query = "SELECT * FROM users_table WHERE id = $1;"
 user_database.register(:find_user, query, :id)
 ```
@@ -53,7 +53,7 @@ user_database.register(:find_user, query, :id)
 If you try and register a SQL statement using `$1` without defining an
 argument name it will raise an error.
 
-```
+```ruby
 user_database.register :find_user, "SELECT * FROM users WHERE id = $1;"
   # SQLCapsule::Query::ArgumentCountMismatchError: Argument count mismatch
   # 0 arguments provided for
@@ -64,7 +64,7 @@ user_database.register :find_user, "SELECT * FROM users WHERE id = $1;"
 Likewise, if you try and register an argument without defining
 its use within the SQL it will also raise an error.
 
-```
+```ruby
 user_database.register :find_user, "SELECT * FROM users;", :id
   # SQLCapsule::Query::ArgumentCountMismatchError: Argument count mismatch
   # 1 arguments provided for
@@ -78,30 +78,31 @@ not attempt to verify your numbering. :-)
 
 It is also possible to register a query with a block to handle the resulting rows:
 
-```
+```ruby
 query = "SELECT * FROM users_table WHERE id = $1;", :id
-user_database.register(:find_user, query, :id) { |row| User.new(row) }
+user_database.register(:find_user, query, :id) { |row| row.merge('preprocessed' => true) }
+user_database.run(:find_user, id: 1) => [ { 'name' => 'John', 'age' => 20, 'id' => 3, 'preprocessed' => true} ]
 ```
 
 Any registered query can be called like:
-```
+```ruby
 user_database.run :find_user, id: 3  # => [ { 'name' => 'John', 'age' => 20, 'id' => 3 } ]
 ```
 
 Or with a block:
-```
+```ruby
 user_database.run(:find_user, id: 3) { |user| user.merge('loaded' => true) }
   # => [ { 'name' => 'John', 'age' => 20, 'id' => 3, 'loaded' => true } ]
 ```
 
 Run checks for required keywords when called and will throw an error if missing one:
-```
+```ruby
 user_database.run :find_user
   # => SQLCapsule::QueryGroup::MissingKeywordArgumentError: Missing query argument: id
 ```
 
 The result will return in the form of an array of hashes, where the keys correlate with column names:
-```
+```ruby
 user_database.run :find_adult_users  # => [ { 'name' => 'John', 'age' => 20 }, { 'name' =>  'Anne', 'age' =>  23 } ]
 ```
 
@@ -112,7 +113,7 @@ column names is a perfectly normal and sane thing to do. SQLCapsule enforces the
 of `AS` to alias column names and will raise an error when duplicate column names result
 from a query (like a join)
 
-```
+```ruby
 query = 'SELECT * FROM widgets LEFT JOIN orders on widgets.id=orders.widget_id;'
 widget_database.register :join_widgets, query
 widget_database.run :join_widgets
