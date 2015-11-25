@@ -42,16 +42,17 @@ module SQLCapsule
     end
 
     def test_does_not_raise_error_when_given_extra_arguments
-      @queries.register @name, @query_string
+      @queries.register @name, @query_string, :id
 
-      assert @queries.run @name, id: 1
+      assert @queries.run @name, id: 1, lol: 3
     end
 
     def test_a_query_can_be_called_with_a_block
-      @queries.register @name, @query_string
+      @queries.register @name, @query_string, :id
 
       result = @queries.run(@name, id: 1) { |row| row["name"] }
       assert_equal ["hexowrench"], result
+
     end
 
   end

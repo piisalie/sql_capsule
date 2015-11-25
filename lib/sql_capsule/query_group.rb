@@ -1,3 +1,5 @@
+require_relative 'query'
+
 module SQLCapsule
   class QueryGroup
     attr_reader :queries, :wrapper
@@ -9,7 +11,7 @@ module SQLCapsule
     end
 
     def register(name, query, *args, &block)
-      queries[name] = [ query, block || ->(row) { row }, args ]
+      queries[name] = Query.new(query, *args, &block)
     end
 
     def registered_queries
@@ -18,10 +20,10 @@ module SQLCapsule
 
     def run name, args = { }, &handler
       query = queries.fetch(name) { fail MissingQueryError.new "Query #{name} not registered" }
-      check_args query.last, args.keys
+      check_args query.args, args.keys
 
-      block = handler ? ->(row) { handler.call(queries[name][1].call(row)) } : queries[name][1]
-      wrapper.run(queries[name].first, args.values, &block)
+      block = handler ? ->(row) { handler.call(query.pre_processor.call(row)) } : query.pre_processor
+      wrapper.run(query.to_sql, query.filter_args(args), &block)
     end
 
     private
