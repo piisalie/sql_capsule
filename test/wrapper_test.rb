@@ -23,6 +23,7 @@ module SQLCapsule
     def test_it_raises_an_error_when_multiple_result_columns_share_a_name
       wrapper = Wrapper.new(@db)
       query   = 'SELECT * FROM widgets LEFT JOIN orders on widgets.id=orders.widget_id;'
+      wrapper.run query
       assert_raises(Wrapper::DuplicateColumnNamesError){ wrapper.run query }
     end
 

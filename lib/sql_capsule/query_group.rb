@@ -2,16 +2,17 @@ require_relative 'query'
 
 module SQLCapsule
   class QueryGroup
-    attr_reader :queries, :wrapper
-    private     :queries, :wrapper
+    attr_reader :queries, :wrapper, :query_object
+    private     :queries, :wrapper, :query_object
 
-    def initialize(wrapper)
-      @wrapper = wrapper
-      @queries = { }
+    def initialize(wrapper, query_object = Query)
+      @wrapper      = wrapper
+      @queries      = { }
+      @query_object = query_object
     end
 
     def register(name, query, *args, &block)
-      queries[name] = Query.new(query, *args, &block)
+      queries[name] = query_object.new(query, *args, &block)
     end
 
     def registered_queries
