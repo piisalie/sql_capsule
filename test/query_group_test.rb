@@ -5,7 +5,7 @@ module SQLCapsule
   class QueryGroupTest < Minitest::Test
 
     def setup
-      @db = PG.connect(dbname: 'sql_capsule_test')
+      @db = setup_test_database
       @name      = :find_widget
       @wrapper   = Wrapper.new(@db)
       @queries   = QueryGroup.new(@wrapper)
@@ -28,7 +28,7 @@ module SQLCapsule
       @queries.register @name, @query_string, :id
       result = @queries.run @name, id: 1
 
-      assert_equal [{"name"=>"hexowrench", "price"=>"2999", "id"=>"1"}], result
+      assert_equal [{"name"=>"hexowrench", "price"=>2999, "id"=>1}], result
     end
 
     def test_raises_an_error_when_missing_an_argument
@@ -52,7 +52,6 @@ module SQLCapsule
 
       result = @queries.run(@name, id: 1) { |row| row["name"] }
       assert_equal ["hexowrench"], result
-
     end
 
   end
