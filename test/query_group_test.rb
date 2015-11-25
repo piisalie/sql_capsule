@@ -19,7 +19,7 @@ module SQLCapsule
     end
 
     def test_it_registers_a_query_with_a_block
-      @queries.register(@name, @query_string, :id) { |result| result.map { |widget| widget["name"]}}
+      @queries.register(@name, @query_string, :id) { |result| result["name"] }
       result = @queries.run @name, id: 1
       assert_equal ["hexowrench"], result
     end

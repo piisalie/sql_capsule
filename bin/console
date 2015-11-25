@@ -13,4 +13,5 @@ require "sql_capsule"
 require "irb"
 @db      = PG.connect(dbname: 'sql_capsule_test')
 @wrapper = SQLCapsule.wrap(@db)
+@wrapper.register(:all_widgets, "SELECT * FROM widgets;") { |widget| widget.merge!("inblock" => true)  }
 IRB.start

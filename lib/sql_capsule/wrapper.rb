@@ -18,6 +18,7 @@ module SQLCapsule
             yield row
           end
         end
+
         result.to_a
       end
     end

@@ -22,15 +22,17 @@ module SQLCapsule
       block = queries[name][1]
       if block
         if block_given?
-          wrapper.run(queries[name].first, args.values).each do |row|
+          wrapper.run(queries[name].first, args.values).map do |row|
             yield block.call(row)
           end
         else
-          block.call(wrapper.run queries[name].first, args.values)
+          wrapper.run(queries[name].first, args.values).map do |row|
+            block.call(row)
+          end
         end
       else
         if block_given?
-          wrapper.run(queries[name].first, args.values).each do |row|
+          wrapper.run(queries[name].first, args.values) do |row|
             yield row
           end
         else
