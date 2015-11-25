@@ -103,6 +103,7 @@ user_database.run :find_user
 
 The result will return in the form of an array of hashes, where the keys correlate with column names:
 ```ruby
+user_database.register :find_adult_users, "SELECT * FROM users WHERE age >= 18;"
 user_database.run :find_adult_users  # => [ { 'name' => 'John', 'age' => 20 }, { 'name' =>  'Anne', 'age' =>  23 } ]
 ```
 
