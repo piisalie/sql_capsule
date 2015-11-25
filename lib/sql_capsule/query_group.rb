@@ -9,37 +9,19 @@ module SQLCapsule
     end
 
     def register(name, query, *args, &block)
-      queries[name] = [ query, block, args ]
+      queries[name] = [ query, block || ->(row) { row }, args ]
     end
 
     def registered_queries
       queries.keys
     end
 
-    def run name, args = { }
+    def run name, args = { }, &handler
       query = queries.fetch(name) { fail MissingQueryError.new "Query #{name} not registered" }
       check_args query.last, args.keys
 
-      block = queries[name][1]
-      if block
-        if block_given?
-          wrapper.run(queries[name].first, args.values).map do |row|
-            yield block.call(row)
-          end
-        else
-          wrapper.run(queries[name].first, args.values).map do |row|
-            block.call(row)
-          end
-        end
-      else
-        if block_given?
-          wrapper.run(queries[name].first, args.values) do |row|
-            yield row
-          end
-        else
-          wrapper.run queries[name].first, args.values
-        end
-      end
+      block = handler ? ->(row) { handler.call(queries[name][1].call(row)) } : queries[name][1]
+      wrapper.run(queries[name].first, args.values, &block)
     end
 
     private

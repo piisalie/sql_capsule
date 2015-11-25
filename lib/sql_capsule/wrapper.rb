@@ -14,7 +14,7 @@ module SQLCapsule
       raise DuplicateColumnNamesError.new(result.fields, query) if duplicate_result_columns?(result.fields)
 
       if block_given?
-        result.each do |row|
+        result.map do |row|
           yield row
         end
       else

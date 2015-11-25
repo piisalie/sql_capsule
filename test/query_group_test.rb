@@ -50,9 +50,8 @@ module SQLCapsule
     def test_a_query_can_be_called_with_a_block
       @queries.register @name, @query_string
 
-      @queries.run(@name, id: 1) do |result|
-        assert_equal "hexowrench", result["name"]
-      end
+      result = @queries.run(@name, id: 1) { |row| row["name"] }
+      assert_equal ["hexowrench"], result
     end
 
   end
