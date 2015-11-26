@@ -3,5 +3,6 @@ set -euo pipefail
 IFS=$'\n\t'
 
 bundle install
-
-# Do any other automated setup that you need to do here
+bundle exec rake db:drop
+bundle exec rake db:create
+bundle exec rake db:migrate

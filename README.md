@@ -1,24 +1,12 @@
 # SQLCapsule
 
-Note: this is still under heavy construction
-
-### Todo:
-- [x] Refactor QueryHolder#run it's pretty terrible, maybe there's another object in there somewhere
-- [x] Enforce `$1` count in SQL query should match the named arguments count when registering a query
-- [x] Clean up the README
-- [x] Fix the tests/test database setup
-- [x] Check/update dependencies/versions
-- [ ] Describe intended usage better
-
-
 SQLCapsule is the culmination of many of my thoughts surrounding ORMs and how we use Ruby to
 interact with databases. The goal is to be a small and easy to understand tool to help you
-talk to your database without the baggage of a full fledged ORM. This is reminiscent of the
-repository pattern and done by registering and naming SQL queries for later use.
+talk to your database without the baggage of a full fledged ORM. SQLCapsule is reminiscent
+of the repository pattern and done by registering and naming SQL queries for later use.
 
 SQLCapsule aims to provide helpful errors, and to help you along your way to building
-your application specific database interaction layer.
-
+your application specific Postgresql interaction layer.
 
 ## Installation
 
@@ -102,7 +90,10 @@ user_database.run :find_user
   # => SQLCapsule::QueryGroup::MissingKeywordArgumentError: Missing query argument: id
 ```
 
-The result will return in the form of an array of hashes, where the keys correlate with column names:
+The result of a query will return in the form of an array of hashes, where each item in
+the array corresponds to result row, and key/value pairs in the hash correspond with
+column/value pairs in a resulting row.
+
 ```ruby
 user_database.register :find_adult_users, "SELECT * FROM users WHERE age >= 18;"
 user_database.run :find_adult_users  # => [ { 'name' => 'John', 'age' => 20 }, { 'name' =>  'Anne', 'age' =>  23 } ]
