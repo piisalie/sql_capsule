@@ -1,10 +1,10 @@
 # SQLCapsule
 
-SQLCapsule is the culmination of many of thoughts surrounding ORMs and how we use Ruby to
-interact with databases. The goal is to be a small and easy to understand tool to help you
-talk to your database without the baggage of a using a full fledged ORM. SQLCapsule is
-reminiscent of the repository pattern (though you may use it however you like) and
-works by registering and naming SQL queries for later use.
+SQLCapsule is the culmination of many of my thoughts and concerns surrounding ORMs and how
+we use Ruby to interact with databases. The goal is to be a small and easy to understand
+tool to help you talk to your database without the baggage of a using a full fledged ORM.
+SQLCapsule is reminiscent of the repository pattern (though you may use it however you like)
+and works by registering and naming SQL queries for later use.
 
 SQLCapsule aims to provide helpful errors, and to assist you along the way to building
 an application specific PostgreSQL interaction layer.
