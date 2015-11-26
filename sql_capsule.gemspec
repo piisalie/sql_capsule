@@ -9,8 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Paul Dawson"]
   spec.email         = ["paul@into.computer"]
 
-  spec.summary       = %q{ A utility for registering bits of SQL for later use. }
-  spec.description   = %q{ SQLCapsule is the culmination of many of my thoughts surrounding ORMs and how we use Ruby to interact with databases generally. The goal is to be a small and easy to understand tool to help you talk to your database without the baggage of a full fledged ORM. This is done by registering and naming SQL queries for later use. }
+  spec.summary       = %q{ Less ORM, more SQL }
+  spec.description   = %q{ SQLCapsule is the culmination of many of my thoughts and concerns surrounding ORMs and how we use Ruby to interact with databases. The goal is to be a small and easy to understand tool to help you talk to your database without the baggage of a using a full fledged ORM. SQLCapsule is reminiscent of the repository pattern (though you may use it however you like) and works by registering and naming SQL queries for later use. SQLCapsule aims to provide helpful errors, and to assist you along the way to building an application specific PostgreSQL interaction layer. }
+
   spec.homepage      = "https://github.com/piisalie/sql_capsule"
   spec.license       = "MIT"
 
