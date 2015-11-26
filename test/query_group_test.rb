@@ -54,5 +54,14 @@ module SQLCapsule
       assert_equal ["hexowrench"], result
     end
 
+    def test_a_query_can_be_saved_and_called_with_a_block
+      @queries.register(@name, @query_string, :id) { |row| row.merge("inner" => true) }
+
+      result = @queries.run(@name, id: 1) { |row| row.merge("outer" => true) }
+
+      assert_equal true, result.first["inner"]
+      assert_equal true, result.first["outer"]
+    end
+
   end
 end

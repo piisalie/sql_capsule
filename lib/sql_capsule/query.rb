@@ -18,6 +18,11 @@ module SQLCapsule
       given_args.select { |key, value| args.include?(key) }.values
     end
 
+    def add_post_processor(block)
+      block ||= Proc.new { |row| row }
+      Proc.new { |row| block.call(pre_processor.call(row)) }
+    end
+
     private
 
     def verify_arguments

@@ -20,14 +20,18 @@ module SQLCapsule
     end
 
     def run name, args = { }, &handler
-      query = queries.fetch(name) { fail MissingQueryError.new "Query #{name} not registered" }
+      query = find_query name
       check_args query.args, args.keys
 
-      block = handler ? ->(row) { handler.call(query.pre_processor.call(row)) } : query.pre_processor
+      block = query.add_post_processor handler
       wrapper.run(query.to_sql, query.filter_args(args), &block)
     end
 
     private
+
+    def find_query name
+      queries.fetch(name) { fail MissingQueryError.new "Query #{name} not registered" }
+    end
 
     def check_args required_args, args
       required_args.each do |keyword|
@@ -35,7 +39,7 @@ module SQLCapsule
       end
     end
 
-    class MissingQueryError < RuntimeError; end
+    class MissingQueryError           < RuntimeError; end
     class MissingKeywordArgumentError < RuntimeError; end
 
   end
