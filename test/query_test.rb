@@ -40,12 +40,20 @@ module SQLCapsule
       assert Query.new(sql, :id)
     end
 
-    def test_retrieves_required_arguments
+    def test_retrieves_only_the_required_arguments
       sql        = "SELECT * FROM widgets WHERE id = $1"
       query      = Query.new(sql, :id)
       given      = { id: 3, sku: 30494 }
 
       assert_equal([ 3 ], query.filter_args(given))
+    end
+
+    def test_always_returns_arguments_in_coorect_order
+      sql        = "SELECT * FROM widgets WHERE name LIKE $1 LIMIT $1"
+      query      = Query.new(sql, :name, :limit)
+      given      = { limit: 2, name: '%lo%' }
+
+      assert_equal [ '%lo%', 2 ], query.filter_args(given)
     end
   end
 end

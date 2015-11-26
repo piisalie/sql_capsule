@@ -15,7 +15,7 @@ module SQLCapsule
     end
 
     def filter_args(given_args)
-      given_args.select { |key, value| args.include?(key) }.values
+      given_args.values_at(*args)
     end
 
     def add_post_processor(block)
